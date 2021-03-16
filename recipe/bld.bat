@@ -4,7 +4,7 @@ if %VS_MAJOR% LEQ 9 copy %RECIPE_DIR%\winres.h .
 if errorlevel 1 exit 1
 
 :: Build!
-nmake /f Makefile.vc CFG=release-dynamic RTLIBCFG=dynamic OBJDIR=output
+nmake /f Makefile.vc CFG=release-dynamic RTLIBCFG=dynamic OBJDIR=output all
 if errorlevel 1 exit 1
 
 :: Copy the dll's of these dependencies
