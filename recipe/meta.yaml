@@ -10,7 +10,7 @@ source:
   sha256: 2fc8bbde9f97f2ab403c0224fb9ca62b2e6852cbc519e91ceaa7c153ffd88a0c
 
 build:
-  number: 0
+  number: 1
   run_exports:
     # https://abi-laboratory.pro/?view=timeline&l=libwebp
     - {{ pin_compatible('libwebp-base') }}
@@ -28,14 +28,17 @@ test:
   commands:
     - test -f $PREFIX/lib/libwebp.a               # [not win]
     - test -f $PREFIX/lib/libwebp{{ SHLIB_EXT }}  # [not win]
+    - test -f $PREFIX/lib/libwebpmux{{ SHLIB_EXT }}  # [not win]
     - test -f $PREFIX/include/webp/decode.h       # [not win]
     - test -f $PREFIX/include/webp/encode.h       # [not win]
     - test -f $PREFIX/include/webp/types.h        # [not win]
     - if not exist %LIBRARY_LIB%\\libwebp.lib exit 1  # [win]
     - if not exist %LIBRARY_LIB%\\libwebpdemux.lib exit 1  # [win]
+    - if not exist %LIBRARY_LIB%\\libwebpmux.lib exit 1  # [win]
     - if not exist %LIBRARY_LIB%\\libwebpdecoder.lib exit 1  # [win]
     - if not exist %LIBRARY_BIN%\\libwebp.dll exit 1  # [win]
     - if not exist %LIBRARY_BIN%\\libwebpdemux.dll exit 1  # [win]
+    - if not exist %LIBRARY_BIN%\\libwebpmux.dll exit 1  # [win]
     - if not exist %LIBRARY_BIN%\\libwebpdecoder.dll exit 1  # [win]
     - if not exist %LIBRARY_BIN%\\cwebp.exe exit 1  # [win]
     - if not exist %LIBRARY_BIN%\\dwebp.exe exit 1  # [win]
