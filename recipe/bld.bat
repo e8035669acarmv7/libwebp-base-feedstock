@@ -38,3 +38,7 @@ copy src\webp\encode.h %LIBRARY_PREFIX%\include\webp\
 if errorlevel 1 exit 1
 copy src\webp\types.h %LIBRARY_PREFIX%\include\webp\
 if errorlevel 1 exit 1
+copy src\webp\mux.h %LIBRARY_PREFIX%\include\webp\
+if errorlevel 1 exit 1
+copy src\webp\mux_types.h %LIBRARY_PREFIX%\include\webp\
+if errorlevel 1 exit 1
