@@ -18,11 +18,15 @@ copy output\release-dynamic\%ARCH%\bin\libwebpdecoder.dll %LIBRARY_PREFIX%\bin\l
 if errorlevel 1 exit 1
 copy output\release-dynamic\%ARCH%\bin\libwebpdemux.dll %LIBRARY_PREFIX%\bin\libwebpdemux.dll
 if errorlevel 1 exit 1
+copy output\release-dynamic\%ARCH%\bin\libwebpmux.dll %LIBRARY_PREFIX%\bin\libwebpmux.dll
+if errorlevel 1 exit 1
 copy output\release-dynamic\%ARCH%\lib\libwebp_dll.lib %LIBRARY_PREFIX%\lib\libwebp.lib
 if errorlevel 1 exit 1
 copy output\release-dynamic\%ARCH%\lib\libwebpdecoder_dll.lib %LIBRARY_PREFIX%\lib\libwebpdecoder.lib
 if errorlevel 1 exit 1
 copy output\release-dynamic\%ARCH%\lib\libwebpdemux_dll.lib %LIBRARY_PREFIX%\lib\libwebpdemux.lib
+if errorlevel 1 exit 1
+copy output\release-dynamic\%ARCH%\lib\libwebpmux_dll.lib %LIBRARY_PREFIX%\lib\libwebpmux.lib
 if errorlevel 1 exit 1
 
 :: Copy header files
