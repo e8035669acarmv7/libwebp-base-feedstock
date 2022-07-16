@@ -17,22 +17,25 @@ build:
 
 requirements:
   build:
-    - libtool  # [unix]
     - {{ compiler('c') }}
-    - make  # [not win]
+    - cmake >=3.7
+    - libtool  # [unix]
+    - make     # [unix]
   run_constrained:
     # 1.1 is when libwebp-base was split from libwebp
     - libwebp {{ version }}
 
 test:
   commands:
-  # All binaries should be excluded from libwebp-base
-    - test ! -f $PREFIX/bin/cwebp                   # [not win]
-    - test ! -f $PREFIX/bin/dwebp                   # [not win]
-    - test ! -f $PREFIX/bin/gif2webp                   # [not win]
-    - test ! -f $PREFIX/bin/img2webp                   # [not win]
-    - test ! -f $PREFIX/bin/webinfo                   # [not win]
-    - test ! -f $PREFIX/bin/webpmux                   # [not win]
+  # All binaries should be excluded from libwebp-base. Various binaries
+  # link against libtiff, libpng, libgif, so they must be separated to prevent
+  # circular imports https://github.com/conda-forge/staged-recipes/pull/11101
+    - test ! -f $PREFIX/bin/cwebp     # [not win]
+    - test ! -f $PREFIX/bin/dwebp     # [not win]
+    - test ! -f $PREFIX/bin/gif2webp  # [not win]
+    - test ! -f $PREFIX/bin/img2webp  # [not win]
+    - test ! -f $PREFIX/bin/webpinfo  # [not win]
+    - test ! -f $PREFIX/bin/webpmux   # [not win]
   # static libs removed in 1.2.3. They are not allowed on conda-forge.
   # See also CFEP-18
     - test ! -f $PREFIX/lib/libwebdecoder.a         # [not win]
