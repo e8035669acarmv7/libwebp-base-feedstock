@@ -26,14 +26,30 @@ requirements:
 
 test:
   commands:
+  # All binaries should be excluded from libwebp-base
+    - test ! -f $PREFIX/bin/cwebp                   # [not win]
+    - test ! -f $PREFIX/bin/dwebp                   # [not win]
+    - test ! -f $PREFIX/bin/gif2webp                   # [not win]
+    - test ! -f $PREFIX/bin/img2webp                   # [not win]
+    - test ! -f $PREFIX/bin/webinfo                   # [not win]
+    - test ! -f $PREFIX/bin/webpmux                   # [not win]
   # static libs removed in 1.2.3. They are not allowed on conda-forge.
   # See also CFEP-18
+    - test ! -f $PREFIX/lib/libwebdecoder.a         # [not win]
     - test ! -f $PREFIX/lib/libwebp.a               # [not win]
-    - test -f $PREFIX/lib/libwebp{{ SHLIB_EXT }}  # [not win]
-    - test -f $PREFIX/lib/libwebpmux{{ SHLIB_EXT }}  # [not win]
+    - test ! -f $PREFIX/lib/libwebpdemux.a          # [not win]
+    - test ! -f $PREFIX/lib/libwebpmux.a            # [not win]
+    - test -f $PREFIX/lib/libwebp{{ SHLIB_EXT }}         # [not win]
+    - test -f $PREFIX/lib/libwebpdecoder{{ SHLIB_EXT }}  # [not win]
+    - test -f $PREFIX/lib/libwebpdemux{{ SHLIB_EXT }}    # [not win]
+    - test -f $PREFIX/lib/libwebpmux{{ SHLIB_EXT }}      # [not win]
     - test -f $PREFIX/include/webp/decode.h       # [not win]
+    - test -f $PREFIX/include/webp/demux.h        # [not win]
     - test -f $PREFIX/include/webp/encode.h       # [not win]
+    - test -f $PREFIX/include/webp/mux_types.h    # [not win]
+    - test -f $PREFIX/include/webp/mux.h          # [not win]
     - test -f $PREFIX/include/webp/types.h        # [not win]
+  # FIXME: Windows package not split; everything in libwebp-base
     - if not exist %LIBRARY_LIB%\\libwebp.lib exit 1  # [win]
     - if not exist %LIBRARY_LIB%\\libwebpdemux.lib exit 1  # [win]
     - if not exist %LIBRARY_LIB%\\libwebpmux.lib exit 1  # [win]
