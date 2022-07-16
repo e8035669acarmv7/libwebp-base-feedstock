@@ -6,7 +6,8 @@ cp $BUILD_PREFIX/share/libtool/build-aux/config.* .
 # (even though it should by using PREFIX), so pass all the necessary parameters
 # for finding other imaging libraries to the configure script.
 ./configure --prefix=${PREFIX} --disable-gl --disable-dependency-tracking \
-	--enable-libwebpmux --disable-libwebpdemux --enable-libwebpdecoder
+	--enable-libwebpmux --disable-libwebpdemux --enable-libwebpdecoder \
+	--enable-shared=yes --enable-static=no
 make -j${CPU_COUNT}
 if [[ "${CONDA_BUILD_CROSS_COMPILATION}" != "1" ]]; then
 make check

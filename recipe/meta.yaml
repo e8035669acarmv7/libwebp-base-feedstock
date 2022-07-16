@@ -26,7 +26,9 @@ requirements:
 
 test:
   commands:
-    - test -f $PREFIX/lib/libwebp.a               # [not win]
+  # static libs removed in 1.2.3. They are not allowed on conda-forge.
+  # See also CFEP-18
+    - test ! -f $PREFIX/lib/libwebp.a               # [not win]
     - test -f $PREFIX/lib/libwebp{{ SHLIB_EXT }}  # [not win]
     - test -f $PREFIX/lib/libwebpmux{{ SHLIB_EXT }}  # [not win]
     - test -f $PREFIX/include/webp/decode.h       # [not win]
