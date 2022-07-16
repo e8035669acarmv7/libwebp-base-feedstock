@@ -52,7 +52,6 @@ test:
     - test -f $PREFIX/include/webp/mux_types.h    # [not win]
     - test -f $PREFIX/include/webp/mux.h          # [not win]
     - test -f $PREFIX/include/webp/types.h        # [not win]
-  # FIXME: Windows package not split; everything in libwebp-base
     - if exist %LIBRARY_BIN%\\cwebp.exe exit 1     # [win]
     - if exist %LIBRARY_BIN%\\dwebp.exe exit 1     # [win]
     - if exist %LIBRARY_BIN%\\gif2webp.exe exit 1  # [win]
