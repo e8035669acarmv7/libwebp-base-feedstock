@@ -1,4 +1,4 @@
-{% set version = "1.2.2" %}
+{% set version = "1.2.3" %}
 {% set major,minor,patch = version.split('.') %}
 
 package:
@@ -7,51 +7,77 @@ package:
 
 source:
   url: http://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-{{ version }}.tar.gz
-  sha256: 7656532f837af5f4cec3ff6bafe552c044dc39bf453587bd5b77450802f4aee6
+  sha256: f5d7ab2390b06b8a934a4fc35784291b3885b557780d099bd32f09241f9d83f9
 
 build:
-  number: 1
+  number: 0
   run_exports:
     # https://abi-laboratory.pro/?view=timeline&l=libwebp
-    - {{ pin_compatible('libwebp-base') }}
+    - {{ pin_subpackage('libwebp-base') }}
 
 requirements:
   build:
-    - libtool  # [unix]
     - {{ compiler('c') }}
-    - make  # [not win]
+    - cmake >=3.7
+    - libtool  # [unix]
+    - make     # [unix]
   run_constrained:
     # 1.1 is when libwebp-base was split from libwebp
     - libwebp {{ version }}
 
 test:
   commands:
-    - test -f $PREFIX/lib/libwebp.a               # [not win]
-    - test -f $PREFIX/lib/libwebp{{ SHLIB_EXT }}  # [not win]
-    - test -f $PREFIX/lib/libwebpmux{{ SHLIB_EXT }}  # [not win]
+  # All binaries should be excluded from libwebp-base. Various binaries
+  # link against libtiff, libpng, libgif, so they must be separated to prevent
+  # circular imports https://github.com/conda-forge/staged-recipes/pull/11101
+    - test ! -f $PREFIX/bin/cwebp     # [not win]
+    - test ! -f $PREFIX/bin/dwebp     # [not win]
+    - test ! -f $PREFIX/bin/gif2webp  # [not win]
+    - test ! -f $PREFIX/bin/img2webp  # [not win]
+    - test ! -f $PREFIX/bin/webpinfo  # [not win]
+    - test ! -f $PREFIX/bin/webpmux   # [not win]
+  # static libs removed in 1.2.3. They are not allowed on conda-forge.
+  # See also CFEP-18
+    - test ! -f $PREFIX/lib/libwebdecoder.a         # [not win]
+    - test ! -f $PREFIX/lib/libwebp.a               # [not win]
+    - test ! -f $PREFIX/lib/libwebpdemux.a          # [not win]
+    - test ! -f $PREFIX/lib/libwebpmux.a            # [not win]
+    - test -f $PREFIX/lib/libwebp{{ SHLIB_EXT }}         # [not win]
+    - test -f $PREFIX/lib/libwebpdecoder{{ SHLIB_EXT }}  # [not win]
+    - test -f $PREFIX/lib/libwebpdemux{{ SHLIB_EXT }}    # [not win]
+    - test -f $PREFIX/lib/libwebpmux{{ SHLIB_EXT }}      # [not win]
     - test -f $PREFIX/include/webp/decode.h       # [not win]
+    - test -f $PREFIX/include/webp/demux.h        # [not win]
     - test -f $PREFIX/include/webp/encode.h       # [not win]
+    - test -f $PREFIX/include/webp/mux_types.h    # [not win]
+    - test -f $PREFIX/include/webp/mux.h          # [not win]
     - test -f $PREFIX/include/webp/types.h        # [not win]
-    - if not exist %LIBRARY_LIB%\\libwebp.lib exit 1  # [win]
-    - if not exist %LIBRARY_LIB%\\libwebpdemux.lib exit 1  # [win]
-    - if not exist %LIBRARY_LIB%\\libwebpmux.lib exit 1  # [win]
+    - if exist %LIBRARY_BIN%\\cwebp.exe exit 1     # [win]
+    - if exist %LIBRARY_BIN%\\dwebp.exe exit 1     # [win]
+    - if exist %LIBRARY_BIN%\\gif2webp.exe exit 1  # [win]
+    - if exist %LIBRARY_BIN%\\img2webp.exe exit 1  # [win]
+    - if exist %LIBRARY_BIN%\\webpinfo.exe exit 1  # [win]
+    - if exist %LIBRARY_BIN%\\webpmux.exe exit 1   # [win]
+    - if not exist %LIBRARY_LIB%\\libwebp.lib exit 1         # [win]
     - if not exist %LIBRARY_LIB%\\libwebpdecoder.lib exit 1  # [win]
-    - if not exist %LIBRARY_BIN%\\libwebp.dll exit 1  # [win]
-    - if not exist %LIBRARY_BIN%\\libwebpdemux.dll exit 1  # [win]
-    - if not exist %LIBRARY_BIN%\\libwebpmux.dll exit 1  # [win]
+    - if not exist %LIBRARY_LIB%\\libwebpdemux.lib exit 1    # [win]
+    - if not exist %LIBRARY_LIB%\\libwebpmux.lib exit 1      # [win]
+    - if not exist %LIBRARY_BIN%\\libwebp.dll exit 1         # [win]
     - if not exist %LIBRARY_BIN%\\libwebpdecoder.dll exit 1  # [win]
-    - if not exist %LIBRARY_BIN%\\cwebp.exe exit 1  # [win]
-    - if not exist %LIBRARY_BIN%\\dwebp.exe exit 1  # [win]
-    - if not exist %LIBRARY_INC%\\webp\\decode.h exit 1  # [win]
-    - if not exist %LIBRARY_INC%\\webp\\encode.h exit 1  # [win]
-    - if not exist %LIBRARY_INC%\\webp\\types.h exit 1  # [win]
-
+    - if not exist %LIBRARY_BIN%\\libwebpdemux.dll exit 1    # [win]
+    - if not exist %LIBRARY_BIN%\\libwebpmux.dll exit 1      # [win]
+    - if not exist %LIBRARY_INC%\\webp\\decode.h exit 1     # [win]
+    - if not exist %LIBRARY_INC%\\webp\\demux.h exit 1      # [win]
+    - if not exist %LIBRARY_INC%\\webp\\encode.h exit 1     # [win]
+    - if not exist %LIBRARY_INC%\\webp\\mux_types.h exit 1  # [win]
+    - if not exist %LIBRARY_INC%\\webp\\mux.h exit 1        # [win]
+    - if not exist %LIBRARY_INC%\\webp\\types.h exit 1      # [win]
 about:
   home: https://developers.google.com/speed/webp
   license: BSD-3-Clause
   license_file: COPYING
   summary: WebP image library
-  description: |
+  description: >
     WebP is a method of lossy and lossless compression that can be used on a
     large variety of photographic, translucent and graphical images found on the
     web. The degree of lossy compression is adjustable so a user can choose the

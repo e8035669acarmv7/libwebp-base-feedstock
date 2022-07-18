@@ -7,11 +7,6 @@ if errorlevel 1 exit 1
 nmake /f Makefile.vc CFG=release-dynamic RTLIBCFG=dynamic OBJDIR=output all
 if errorlevel 1 exit 1
 
-:: Copy the dll's of these dependencies
-copy output\release-dynamic\%ARCH%\bin\cwebp.exe %LIBRARY_PREFIX%\bin\cwebp.exe
-if errorlevel 1 exit 1
-copy output\release-dynamic\%ARCH%\bin\dwebp.exe %LIBRARY_PREFIX%\bin\dwebp.exe
-if errorlevel 1 exit 1
 copy output\release-dynamic\%ARCH%\bin\libwebp.dll %LIBRARY_PREFIX%\bin\libwebp.dll
 if errorlevel 1 exit 1
 copy output\release-dynamic\%ARCH%\bin\libwebpdecoder.dll %LIBRARY_PREFIX%\bin\libwebpdecoder.dll
@@ -41,4 +36,6 @@ if errorlevel 1 exit 1
 copy src\webp\mux.h %LIBRARY_PREFIX%\include\webp\
 if errorlevel 1 exit 1
 copy src\webp\mux_types.h %LIBRARY_PREFIX%\include\webp\
+if errorlevel 1 exit 1
+copy src\webp\demux.h %LIBRARY_PREFIX%\include\webp\
 if errorlevel 1 exit 1
