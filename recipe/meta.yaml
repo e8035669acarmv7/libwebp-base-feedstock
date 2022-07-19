@@ -18,7 +18,6 @@ build:
 requirements:
   build:
     - {{ compiler('c') }}
-    - cmake >=3.7
     - libtool  # [unix]
     - make     # [unix]
   run_constrained:
