@@ -26,53 +26,38 @@ requirements:
     # 1.1 is when libwebp-base was split from libwebp
     - libwebp {{ version }}
 
+{% set libraries = ["libwebp", "libwebpdemux", "libwebpmux", "libwebpdecoder"] %}
+{% set headers = ["decode.h", "demux.h", "encode.h", "mux_types.h", "mux.h", "types.h"] %}
+{% set binaries = ["cwebp", "dwebp", "gif2webp", "img2webp", "webpinfo", "webpmux"] %}
+
 test:
   commands:
-  # All binaries should be excluded from libwebp-base. Various binaries
-  # link against libtiff, libpng, libgif, so they must be separated to prevent
-  # circular imports https://github.com/conda-forge/staged-recipes/pull/11101
-    - test ! -f $PREFIX/bin/cwebp     # [not win]
-    - test ! -f $PREFIX/bin/dwebp     # [not win]
-    - test ! -f $PREFIX/bin/gif2webp  # [not win]
-    - test ! -f $PREFIX/bin/img2webp  # [not win]
-    - test ! -f $PREFIX/bin/webpinfo  # [not win]
-    - test ! -f $PREFIX/bin/webpmux   # [not win]
-  # static libs removed in 1.2.3. They are not allowed on conda-forge.
-  # See also CFEP-18
-    - test ! -f $PREFIX/lib/libwebdecoder.a         # [not win]
-    - test ! -f $PREFIX/lib/libwebp.a               # [not win]
-    - test ! -f $PREFIX/lib/libwebpdemux.a          # [not win]
-    - test ! -f $PREFIX/lib/libwebpmux.a            # [not win]
-    - test -f $PREFIX/lib/libwebp{{ SHLIB_EXT }}         # [not win]
-    - test -f $PREFIX/lib/libwebpdecoder{{ SHLIB_EXT }}  # [not win]
-    - test -f $PREFIX/lib/libwebpdemux{{ SHLIB_EXT }}    # [not win]
-    - test -f $PREFIX/lib/libwebpmux{{ SHLIB_EXT }}      # [not win]
-    - test -f $PREFIX/include/webp/decode.h       # [not win]
-    - test -f $PREFIX/include/webp/demux.h        # [not win]
-    - test -f $PREFIX/include/webp/encode.h       # [not win]
-    - test -f $PREFIX/include/webp/mux_types.h    # [not win]
-    - test -f $PREFIX/include/webp/mux.h          # [not win]
-    - test -f $PREFIX/include/webp/types.h        # [not win]
-    - if exist %LIBRARY_BIN%\\cwebp.exe exit 1     # [win]
-    - if exist %LIBRARY_BIN%\\dwebp.exe exit 1     # [win]
-    - if exist %LIBRARY_BIN%\\gif2webp.exe exit 1  # [win]
-    - if exist %LIBRARY_BIN%\\img2webp.exe exit 1  # [win]
-    - if exist %LIBRARY_BIN%\\webpinfo.exe exit 1  # [win]
-    - if exist %LIBRARY_BIN%\\webpmux.exe exit 1   # [win]
-    - if not exist %LIBRARY_LIB%\\libwebp.lib exit 1         # [win]
-    - if not exist %LIBRARY_LIB%\\libwebpdecoder.lib exit 1  # [win]
-    - if not exist %LIBRARY_LIB%\\libwebpdemux.lib exit 1    # [win]
-    - if not exist %LIBRARY_LIB%\\libwebpmux.lib exit 1      # [win]
-    - if not exist %LIBRARY_BIN%\\libwebp.dll exit 1         # [win]
-    - if not exist %LIBRARY_BIN%\\libwebpdecoder.dll exit 1  # [win]
-    - if not exist %LIBRARY_BIN%\\libwebpdemux.dll exit 1    # [win]
-    - if not exist %LIBRARY_BIN%\\libwebpmux.dll exit 1      # [win]
-    - if not exist %LIBRARY_INC%\\webp\\decode.h exit 1     # [win]
-    - if not exist %LIBRARY_INC%\\webp\\demux.h exit 1      # [win]
-    - if not exist %LIBRARY_INC%\\webp\\encode.h exit 1     # [win]
-    - if not exist %LIBRARY_INC%\\webp\\mux_types.h exit 1  # [win]
-    - if not exist %LIBRARY_INC%\\webp\\mux.h exit 1        # [win]
-    - if not exist %LIBRARY_INC%\\webp\\types.h exit 1      # [win]
+    {% for each_lib in libraries %}
+      # shared libraries
+      - test -f $PREFIX/lib/{{ each_lib }}.so                 # [linux]
+      - test -f $PREFIX/lib/{{ each_lib }}.dylib              # [osx]
+      - if not exist %LIBRARY_LIB%\{{ each_lib }}.lib exit 1  # [win]
+      - if not exist %LIBRARY_BIN%\{{ each_lib }}.dll exit 1  # [win]
+
+      # absence of static libraries; removed in v1.2.3
+      # should not be packaged in conda-forge, see also CFEP-18
+      - test ! -f $PREFIX/lib/{{ each_lib }}.a                # [unix]
+    {% endfor %}
+
+    # headers
+    {% for each_header in headers %}
+      - test -f $PREFIX/include/webp/{{ each_header }} || (echo "{{ each_header }} not found" && exit 1)  # [unix]
+      - if not exist %LIBRARY_INC%\webp\{{ each_header }} exit 1                                          # [win]
+    {% endfor %}
+
+    # All binaries should be excluded from libwebp-base. Various binaries
+    # link against libtiff, libpng, libgif, so they must be separated to prevent
+    # circular imports https://github.com/conda-forge/staged-recipes/pull/11101
+    {% for each_bin in binaries %}
+      - test ! -f $PREFIX/bin/{{ each_bin }}               # [unix]
+      - if exist %LIBRARY_BIN%\{{ each_bin }}.exe exit 1   # [win]
+    {% endfor %}
+
 about:
   home: https://developers.google.com/speed/webp
   license: BSD-3-Clause
