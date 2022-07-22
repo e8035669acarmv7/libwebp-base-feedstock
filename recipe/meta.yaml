@@ -45,6 +45,10 @@ test:
       # absence of static libraries; removed in v1.2.3
       # should not be packaged in conda-forge, see also CFEP-18
       - test ! -f $PREFIX/lib/{{ each_lib }}.a                # [unix]
+
+      # config files; unix currently doesn't have CMake, only pkgconfig
+      - test $PREFIX/pkgconfig/{{ each_lib }}.pc              # [unix]
+      - if not exist %LIBRARY_PREFIX%\cmake\WebPConfig.cmake exit 1  # [win]
     {% endfor %}
 
     # headers
