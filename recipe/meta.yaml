@@ -26,7 +26,7 @@ requirements:
     # 1.1 is when libwebp-base was split from libwebp
     - libwebp {{ version }}
 
-{% set libraries = ["libwebp", "libwebpdemux", "libwebpmux", "libwebpdecoder"] %}
+{% set libraries = ["libwebp", "libwebpdemux", "libwebpmux", "libwebpdecoder", "libsharpyuv"] %}
 {% set headers = ["decode.h", "demux.h", "encode.h", "mux_types.h", "mux.h", "types.h"] %}
 {% set binaries = ["cwebp", "dwebp", "gif2webp", "img2webp", "webpinfo", "webpmux"] %}
 
